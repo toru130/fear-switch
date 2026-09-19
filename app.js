@@ -1,0 +1,16 @@
+const demo=[
+ {date:"2022-06-13",vix:34.8,vixChg:12.4,ndx20:-11.6,sp20:-9.8,ndxDD:-26.1,spDD:-22.4,sim:94},
+ {date:"2020-03-16",vix:82.7,vixChg:43.8,ndx20:-18.2,sp20:-23.5,ndxDD:-30.8,spDD:-30.9,sim:91},
+ {date:"2018-12-21",vix:30.1,vixChg:10.2,ndx20:-13.1,sp20:-13.0,ndxDD:-21.2,spDD:-19.8,sim:88},
+ {date:"2015-08-24",vix:40.7,vixChg:18.1,ndx20:-10.8,sp20:-8.7,ndxDD:-13.4,spDD:-11.9,sim:84},
+ {date:"2022-01-24",vix:29.9,vixChg:16.5,ndx20:-12.0,sp20:-10.4,ndxDD:-17.3,spDD:-14.2,sim:81}
+];
+let state={vix:32.4,vixChg:18.0,ndx20:-11.0,sp20:-7.2,ndxDD:-15.8,spDD:-9.7,ruleVix:Number(localStorage.ruleVix||30),rulePct:Number(localStorage.rulePct||20)};
+function score(d){let s=0;s+=Math.min(100,Math.max(0,(d.vix-12)/48*100))*.22;s+=Math.min(100,Math.max(0,d.vixChg/50*100))*.15;s+=Math.min(100,Math.max(0,-d.ndx20/25*100))*.18;s+=Math.min(100,Math.max(0,-d.sp20/20*100))*.13;s+=Math.min(100,Math.max(0,-d.ndxDD/45*100))*.20;s+=Math.min(100,Math.max(0,-d.spDD/40*100))*.12;return Math.round(s)}
+function render(){const s=score(state);document.querySelector("#score").textContent=s;document.querySelector(".scoreRing").style.background=`conic-gradient(var(--accent) ${s*3.6}deg,#273345 ${s*3.6}deg)`;document.querySelector("#scoreLabel").textContent=s<20?"通常":s<40?"注意":s<60?"不安":s<80?"強い恐怖":"極度の恐怖";document.querySelector("#vixOut").textContent=state.vix.toFixed(1);document.querySelector("#ndxDdOut").textContent=state.ndxDD.toFixed(1)+"%";document.querySelector("#spDdOut").textContent=state.spDD.toFixed(1)+"%";document.querySelector("#vixChgOut").textContent=(state.vixChg>=0?"+":"")+state.vixChg.toFixed(1)+"%";document.querySelector("#ruleVix").textContent=state.ruleVix;document.querySelector("#rulePct").textContent=state.rulePct;document.querySelector("#ruleStatus").textContent=state.vix>=state.ruleVix?`事前ルールの条件を満たしています：追加投資 ${state.rulePct}%`:`現在は事前ルールの条件未達`;document.querySelector("#similar").innerHTML=demo.map(x=>`<div class="episode"><div><b>${x.date}</b><div class="muted">VIX ${x.vix} · NDX DD ${x.ndxDD}%</div></div><span class="tag">類似度 ${x.sim}%</span></div>`).join("");sim()}
+function sim(){const a=Math.max(0,Number(document.querySelector("#assets").value)||0);const ds=[10,20,30,40,50];document.querySelector("#sim").innerHTML=ds.map(x=>`<div><span>下落率 -${x}%</span><b>¥${Math.round(a*(1-x/100)).toLocaleString()}</b></div>`).join("")}
+function editRule(){const v=prompt("VIXのルール値",state.ruleVix);if(v!==null&&isFinite(v)){const p=prompt("追加投資割合（%）",state.rulePct);if(p!==null&&isFinite(p)){state.ruleVix=Number(v);state.rulePct=Number(p);localStorage.ruleVix=v;localStorage.rulePct=p;render()}}}
+function randomize(){state.vix=25+Math.random()*25;state.vixChg=-5+Math.random()*45;state.ndx20=-(5+Math.random()*18);state.sp20=-(3+Math.random()*14);state.ndxDD=-(7+Math.random()*28);state.spDD=-(5+Math.random()*22);render()}
+document.querySelector("#assets").addEventListener("input",sim);render();
+let deferred;window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();deferred=e;document.querySelector("#installBtn").hidden=false});document.querySelector("#installBtn").onclick=async()=>{if(deferred){deferred.prompt();deferred=null}};
+if("serviceWorker"in navigator)navigator.serviceWorker.register("sw.js");

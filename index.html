@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0b0f17">
+<link rel="manifest" href="manifest.json">
+<link rel="stylesheet" href="style.css">
+<title>FEAR SWITCH</title>
+</head>
+<body>
+<main class="app">
+<header>
+  <div><div class="eyebrow">PERSONAL MARKET TOOL</div><h1>FEAR SWITCH</h1></div>
+  <button id="installBtn" class="ghost" hidden>ホーム画面へ</button>
+</header>
+
+<section class="hero card">
+  <div class="scoreRing"><div><span id="score">--</span><small>/100</small></div></div>
+  <div class="heroText"><span class="muted">FEAR SCORE</span><h2 id="scoreLabel">データ入力待ち</h2>
+  <p id="ruleStatus">あなたのルールを確認します</p></div>
+</section>
+
+<section class="grid">
+  <div class="metric card"><span>VIX</span><b id="vixOut">--</b></div>
+  <div class="metric card"><span>NASDAQ DD</span><b id="ndxDdOut">--</b></div>
+  <div class="metric card"><span>S&P 500 DD</span><b id="spDdOut">--</b></div>
+  <div class="metric card"><span>VIX 日次変化</span><b id="vixChgOut">--</b></div>
+</section>
+
+<section class="card">
+  <div class="sectionHead"><h3>あなたのルール</h3><button class="textBtn" onclick="editRule()">変更</button></div>
+  <div class="rule"><b>VIX <span id="ruleVix">30</span>以上</b><span>追加投資 <strong id="rulePct">20</strong>%</span></div>
+  <p class="hint">アプリは売買を指示しません。あなたが事前に決めたルールを表示します。</p>
+</section>
+
+<section class="card">
+  <div class="sectionHead"><h3>類似局面</h3><span class="muted">市場の形を比較</span></div>
+  <div id="similar"></div>
+</section>
+
+<section class="card">
+  <div class="sectionHead"><h3>暴落シミュレーター</h3><span class="muted">現在資産から計算</span></div>
+  <label>現在資産（円）<input id="assets" type="number" inputmode="numeric" value="10000000"></label>
+  <div class="sim" id="sim"></div>
+</section>
+
+<section class="card">
+  <div class="sectionHead"><h3>市場データ</h3><span class="muted">デモデータ</span></div>
+  <p class="hint">現在は動作確認用のデモデータです。実データ接続前のMVPです。</p>
+  <button class="primary" onclick="randomize()">デモ局面を変更</button>
+</section>
+
+<footer>FEAR SWITCH · Personal use only · No auto trading</footer>
+</main>
+<script src="app.js"></script>
+</body>
+</html>
